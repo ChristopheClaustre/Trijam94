@@ -304,7 +304,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0.44479156, b: 0, a: 1}
+  m_Color: {r: 0.043137256, g: 0.23529413, b: 0.5372549, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -417,7 +417,7 @@ GameObject:
   - component: {fileID: 287932172}
   - component: {fileID: 287932171}
   m_Layer: 5
-  m_Name: GoodText
+  m_Name: ScoreText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -455,7 +455,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+  m_Color: {r: 0.2901961, g: 0.29803923, b: 0.2901961, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -886,7 +886,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+  m_Color: {r: 0.2901961, g: 0.29803923, b: 0.2901961, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -906,9 +906,9 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Orders :
+  m_Text: 'Orders:
 
-    Good :'
+    Sold:'
 --- !u!222 &503549508
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1959,18 +1959,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9714fb0b0ef63f34491c925ecabddf11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  availableMasks:
+  masks:
   - {fileID: 2800000, guid: 18f5bb3f2c2da4e429509007d51e50ed, type: 3}
   - {fileID: 2800000, guid: 7be741db7518c644f92913d632a24696, type: 3}
   - {fileID: 2800000, guid: 420864aa551148a43a67e03ee05172d3, type: 3}
-  availableColors:
+  colors:
   - {r: 0, g: 1, b: 1, a: 1}
   - {r: 1, g: 0, b: 1, a: 1}
   - {r: 1, g: 1, b: 0, a: 1}
-  rangeLayerCountMin: 3
-  rangeLayerCountMax: 5
-  rangeOrderCountMin: 3
-  rangeOrderCountMax: 5
+  layerCountMin: 2
+  layerCountMax: 6
   onError:
     m_PersistentCalls:
       m_Calls:
@@ -2001,11 +1999,24 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  onEnd:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 258568448}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
   candidateScript: {fileID: 495901664}
   orderScript: {fileID: 299281057}
-  panelWin: {fileID: 258568448}
-  orderText: {fileID: 1540765195}
-  goodText: {fileID: 287932171}
+  timer: 90
 --- !u!4 &896157262
 Transform:
   m_ObjectHideFlags: 0
@@ -2921,7 +2932,7 @@ GameObject:
   - component: {fileID: 1540765196}
   - component: {fileID: 1540765195}
   m_Layer: 5
-  m_Name: OrdersText
+  m_Name: OrdersCountText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2959,7 +2970,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+  m_Color: {r: 0.2901961, g: 0.29803923, b: 0.2901961, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -3600,6 +3611,7 @@ GameObject:
   - component: {fileID: 1881678091}
   - component: {fileID: 1881678090}
   - component: {fileID: 1881678089}
+  - component: {fileID: 1881678092}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -3692,6 +3704,23 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!114 &1881678092
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1881678087}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acd4f0bf9c9f1454aa4dd7bdca254ba9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  OrdersSoldText: {fileID: 3978889236193632872}
+  LayersText: {fileID: 3978889235722369619}
+  TimerText: {fileID: 2090608309}
+  ScoreText: {fileID: 287932171}
+  OrdersCountText: {fileID: 1540765195}
 --- !u!1 &1887415328
 GameObject:
   m_ObjectHideFlags: 0
@@ -4576,7 +4605,7 @@ GameObject:
   - component: {fileID: 3978889235722369620}
   - component: {fileID: 3978889235722369619}
   m_Layer: 5
-  m_Name: TimerText
+  m_Name: LayersText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4693,7 +4722,7 @@ GameObject:
   - component: {fileID: 3978889236193632873}
   - component: {fileID: 3978889236193632872}
   m_Layer: 5
-  m_Name: ScoreText
+  m_Name: OrdersSoldText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
