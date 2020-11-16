@@ -34,12 +34,28 @@ public class GameManager : MonoBehaviour
     protected List<Order> orders;
     protected int currentOrder;
 
+    // Instance management
+    private static GameManager instance;
+    public static GameManager Instance
+    {
+        get => instance;
+        set
+        {
+            if (instance)
+                GameObject.Destroy(instance.gameObject);
 
+            instance = value;
+        }
+    }
 
     // Score
     private int ordersSold;
     public int OrdersSold { get => ordersSold; }
 
+    // Utility property
+    public int OrdersCount { get => orders.Count; }
+    public int CurrentOrderLayerCount { get => orders[currentOrder].datum.Count; }
+    public int CurrentCandidateLayerCount { get => candidateScript.Datum.Count; }
 
     // Others
     private System.Random RNG;
