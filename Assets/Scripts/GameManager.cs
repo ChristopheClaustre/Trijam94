@@ -8,78 +8,95 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
-    public List<Texture2D> availableMasks;
-    public List<Color> availableColors;
+    // Order generation
+    [Header("Order generation")]
+    public List<Texture2D> masks;
+    public List<Color> colors;
+    public int layerCountMin;
+    public int layerCountMax;
 
-    public int rangeLayerCountMin;
-    public int rangeLayerCountMax;
-    public int rangeOrderCountMin;
-    public int rangeOrderCountMax;
-
-    protected List<Order> orders;
-
-    private int score;
-
-    public int Score { get => score; }
-
+    // Events
+    [Header("Game events")]
     public UnityEvent onError;
     public UnityEvent onSold;
+    public UnityEvent onEnd;
 
+    // Textures script
+    [Header("Textures scripts")]
     public CMYKMerger candidateScript;
     public CMYKMerger orderScript;
 
-    public GameObject panelWin;
-    public Text orderText;
-    public Text goodText;
+    [Header("Timer")]
+    [SerializeField]protected float timer;
+    public int Timer { get => Mathf.CeilToInt(timer); }
+
+    // Orders
+    protected List<Order> orders;
+    protected int currentOrder;
+
+
+
+    // Score
+    private int ordersSold;
+    public int OrdersSold { get => ordersSold; }
+
+
+    // Others
+    private System.Random RNG;
 
     public void Start()
     {
-        Debug.Assert(rangeLayerCountMin > 0 && rangeLayerCountMax < 9 && rangeLayerCountMin < rangeLayerCountMax);
-        Debug.Assert(rangeOrderCountMin > 0 && rangeOrderCountMin < rangeOrderCountMax);
+        Debug.Assert(layerCountMin > 0 && layerCountMax < 9 && layerCountMin < layerCountMax);
 
-        var rnd = new System.Random(DateTime.Now.Millisecond);
-        // orders = orders.OrderBy(item => rnd.Next()).ToList();
-        var count = rnd.Next(rangeOrderCountMin, rangeOrderCountMax);
+        Instance = this;
+
+        RNG = new System.Random(DateTime.Now.Millisecond);
+
         orders = new List<Order>();
-        orders.Clear();
-        for (int i = 0; i < count; i++)
-            orders.Add(RandomOrder(rnd));
-
-        orderText.text = "" + count;
-        score = 0;
+        ordersSold = 0;
 
         Next();
     }
 
+    public void Update()
+    {
+        if (timer > 0)
+        {
+            timer -= Time.deltaTime;
+            if (timer < 0)
+            {
+                End();
+            }
+        }
+    }
+
     public void Sell()
     {
+        if (timer < 0) return;
+
         // add score
-        if (orders[0].IsCandidateGood(candidateScript.Datum))
+        if (orders[currentOrder].IsCandidateGood(candidateScript.Datum))
         {
             onSold.Invoke();
-            score += 1;
-            goodText.text = "" + score;
+            ordersSold += 1;
         }
         else
             onError.Invoke();
         
         // next one
-        orders.RemoveAt(0);
-        if (orders.Count > 0)
-            Next();
-        else
-            End();
+        Next();
     }
 
-    public void Next()
+    private void Next()
     {
-        orderScript.Datum = orders[0].datum;
+        NewOrder();
+        orderScript.Datum = orders[currentOrder].datum;
         candidateScript.Clear();
     }
 
     public void End()
     {
-        panelWin.SetActive(true);
+        onEnd.Invoke();
     }
 
     public void Restart()
@@ -87,27 +104,33 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
-    public UpholsteringData RandomData(System.Random random)
+    private void NewOrder()
     {
-        return new UpholsteringData(availableMasks[random.Next(availableMasks.Count)], availableColors[random.Next(availableColors.Count)]);
+        orders.Add(RandomOrder(RNG, layerCountMin, layerCountMax, masks, colors));
+        currentOrder = orders.Count-1;
     }
 
-    public Order RandomOrder(System.Random random)
+    private Order RandomOrder(System.Random random, int layerMin, int layerMax, List<Texture2D> masks, List<Color> colors)
     {
         var order = new Order();
         order.datum = new List<UpholsteringData>();
 
-        var count = random.Next(rangeLayerCountMin, rangeLayerCountMax);
+        var count = random.Next(layerMin, layerMax+1);
         for (int i = 0; i < count; i++)
         {
-            var data = RandomData(random);
+            var data = RandomData(random, masks, colors);
             
             while(order.Contains(data))
-                data = RandomData(random);
+                data = RandomData(random, masks, colors);
 
             order.datum.Add(data);
         }
         
         return order;
+    }
+
+    private UpholsteringData RandomData(System.Random random, List<Texture2D> masks, List<Color> colors)
+    {
+        return new UpholsteringData(masks[random.Next(masks.Count)], colors[random.Next(colors.Count)]);
     }
 }
