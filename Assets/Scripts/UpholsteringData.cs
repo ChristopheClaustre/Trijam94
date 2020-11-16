@@ -39,6 +39,14 @@ public class UpholsteringData : IEquatable<UpholsteringData>
     {
         return this == other;
     }
+
+    public override int GetHashCode()
+    {
+        int hashCode = 1186735103;
+        hashCode = hashCode * -1521134295 + EqualityComparer<Texture2D>.Default.GetHashCode(_mask);
+        hashCode = hashCode * -1521134295 + _color.GetHashCode();
+        return hashCode;
+    }
 }
 
 [Serializable]
