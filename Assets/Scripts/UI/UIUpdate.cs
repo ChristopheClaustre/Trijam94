@@ -16,7 +16,8 @@ public class UIUpdate : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        UpdateLayerCount();
+        UpdateOrders();
     }
 
     // Update is called once per frame
@@ -24,26 +25,36 @@ public class UIUpdate : MonoBehaviour
     {
         if (GameManager.Instance)
         {
-            UpdateUI(
-                GameManager.Instance.OrdersSold,
-                GameManager.Instance.OrdersCount,
-                GameManager.Instance.CurrentCandidateLayerCount,
-                GameManager.Instance.CurrentOrderLayerCount,
-                GameManager.Instance.Timer
-            );
+            internalUpdateTimer(GameManager.Instance.Timer);
         }
     }
 
-    void UpdateUI(int orderSold, int ordersCount, int lastLayerId, int orderLayerCount, int time)
+    public void UpdateOrders()
+    {
+        internalUpdateOrders(GameManager.Instance.OrdersSold, GameManager.Instance.OrdersCount);
+    }
+
+    void internalUpdateOrders(int orderSold, int ordersCount)
     {
         var scoreString = string.Format("{0}", orderSold);
         ScoreText.text = scoreString;
         OrdersSoldText.text = scoreString;
 
         OrdersCountText.text = string.Format("{0}", ordersCount);
+    }
 
+    public void UpdateLayerCount()
+    {
+        internalUpdateLayerCount(GameManager.Instance.CurrentCandidateLayerCount, GameManager.Instance.CurrentOrderLayerCount);
+    }
+
+    void internalUpdateLayerCount(int lastLayerId, int orderLayerCount)
+    {
         LayersText.text = string.Format("{0} / {1}", lastLayerId, orderLayerCount);
+    }
 
+    void internalUpdateTimer(int time)
+    {
         var minutes = time / 60;
         var secondes = time % 60;
         TimerText.text = string.Format("{0:00}:{1:00}", minutes, secondes);

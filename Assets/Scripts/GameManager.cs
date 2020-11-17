@@ -107,7 +107,6 @@ public class GameManager : MonoBehaviour
     {
         NewOrder();
         orderScript.Datum = orders[currentOrder].datum;
-        candidateScript.Clear();
     }
 
     public void End()
